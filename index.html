@@ -29,6 +29,14 @@
       height: 20px;
       margin-right: 5px;
     }
+
+    #tooltip {
+      position: absolute;
+      background-color: #fff;
+      padding: 10px;
+      border: 1px solid #ccc;
+      display: none;
+    }
   </style>
 </head>
 <body>
@@ -37,20 +45,10 @@
 
 <div id="map-container"></div>
 
-<div class="legend">
-  <div class="legend-item">
-    <div class="legend-color" style="background-color: #ccc;"></div>
-    <span>No Data</span>
-  </div>
-  <div class="legend-item">
-    <div class="legend-color" style="background-color: #08519c;"></div>
-    <span>Low Birth Rate</span>
-  </div>
-  <div class="legend-item">
-    <div class="legend-color" style="background-color: #bdd7e7;"></div>
-    <span>High Birth Rate</span>
-  </div>
+<div class="legend" id="legend">
 </div>
+
+<div id="tooltip"></div>
 
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script>
@@ -59,7 +57,7 @@ const width = window.innerWidth;
 const height = window.innerHeight;
 
 // Load data from CSV
-d3.csv("Global_Education.csv").then((educationData) => {
+d3.csv("Global_Education_With_Country_Code.csv").then((educationData) => {
   const projection = d3.geoOrthographic()
     .scale(200)
     .translate([width / 2, height / 2])
@@ -68,27 +66,41 @@ d3.csv("Global_Education.csv").then((educationData) => {
   const path = d3.geoPath().projection(projection);
 
   const colorScale = d3.scaleSequential(d3.interpolateBlues)
-    .domain([0, 10]);
+    .domain([d3.min(educationData, d => +d.Birth_Rate), d3.max(educationData, d => +d.Birth_Rate)]);
 
   const svg = d3.select("#map-container").append("svg")
     .attr("width", "100%")
     .attr("height", "100%")
     .attr("viewBox", `0 0 ${width} ${height}`);
 
+  // Add a legend
+  const legend = d3.select("#legend");
+
+  legend.append("div")
+    .attr("class", "legend-item")
+    .html("<div class='legend-color' style='background-color: #ccc;'></div><span>No Data</span>");
+
+  legend.append("div")
+    .attr("class", "legend-item")
+    .html(`<div class='legend-color' style='background-color: ${colorScale.range()[0]};'></div><span>Low Birth Rate</span>`);
+
+  legend.append("div")
+    .attr("class", "legend-item")
+    .html(`<div class='legend-color' style='background-color: ${colorScale.range()[1]};'></div><span>High Birth Rate</span>`);
+
   // Load world map data
-  d3.json("countries.geo.json").then((world) => {
+  d3.json("https://raw.githubusercontent.com/d3/d3.github.com/master/world-110m.v1.json").then((world) => {
     svg.selectAll("path")
       .data(world.features)
       .enter().append("path")
       .attr("class", "country")
       .attr("d", path)
       .attr("fill", (d) => {
-        // Find corresponding data in the CSV using latitude and longitude
-        const latitude = d.properties.Latitude; // Updated with capitalized "Latitude"
-        const longitude = d.properties.Longitude; // Updated with capitalized "Longitude"
+        // Find corresponding data in the CSV using country code
+        const countryCode = d.id; // Assuming the country code is stored in the 'id' property
 
         const matchingData = educationData.find((data) => {
-          return +data.Latitude === +latitude && +data.Longitude === +longitude;
+          return data['Country Code'] === countryCode;
         });
 
         // If matching data is found, use the birth rate for coloring
@@ -101,7 +113,19 @@ d3.csv("Global_Education.csv").then((educationData) => {
         return "#ccc";
       })
       .on("mouseover", (event, d) => {
-        // Add tooltip or additional interactions if needed
+        // Display tooltip with country name and birth rate
+        const countryCode = d.id;
+        const matchingData = educationData.find((data) => data['Country Code'] === countryCode);
+
+        const tooltip = d3.select("#tooltip");
+        tooltip.html(`<strong>${d.properties.name}</strong><br>Birth Rate: ${matchingData ? matchingData.Birth_Rate : 'No Data'}`);
+        tooltip.style("left", (event.pageX + 10) + "px")
+          .style("top", (event.pageY - 10) + "px")
+          .style("display", "block");
+      })
+      .on("mouseout", () => {
+        // Hide tooltip on mouseout
+        d3.select("#tooltip").style("display", "none");
       });
   });
 });
@@ -110,4 +134,3 @@ d3.csv("Global_Education.csv").then((educationData) => {
 
 </body>
 </html>
-
