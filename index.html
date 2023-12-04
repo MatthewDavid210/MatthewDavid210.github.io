@@ -75,11 +75,6 @@ d3.csv("Global_Education.csv").then((educationData) => {
     .attr("height", "100%")
     .attr("viewBox", `0 0 ${width} ${height}`);
 
-  // Convert latitude and longitude to x, y coordinates
-  const convertCoordinates = (latitude, longitude) => {
-    return projection([longitude, latitude]);
-  };
-
   // Load world map data
   d3.json("countries.geo.json").then((world) => {
     svg.selectAll("path")
@@ -89,11 +84,11 @@ d3.csv("Global_Education.csv").then((educationData) => {
       .attr("d", path)
       .attr("fill", (d) => {
         // Find corresponding data in the CSV using latitude and longitude
-        const latitude = d.properties.latitude; // Replace with your GeoJSON property name
-        const longitude = d.properties.longitude; // Replace with your GeoJSON property name
+        const latitude = d.properties.Latitude; // Updated with capitalized "Latitude"
+        const longitude = d.properties.Longitude; // Updated with capitalized "Longitude"
 
         const matchingData = educationData.find((data) => {
-          return data.latitude === latitude && data.longitude === longitude;
+          return +data.Latitude === +latitude && +data.Longitude === +longitude;
         });
 
         // If matching data is found, use the birth rate for coloring
@@ -115,3 +110,4 @@ d3.csv("Global_Education.csv").then((educationData) => {
 
 </body>
 </html>
+
