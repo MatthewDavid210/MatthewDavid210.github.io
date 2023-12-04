@@ -6,8 +6,8 @@
   <title>3D Interactive Map</title>
   <style>
     #map-container {
-      width: 100%;
-      height: 500px;
+      width: 100vw;
+      height: 100vh;
     }
   </style>
 </head>
@@ -22,7 +22,7 @@ const width = window.innerWidth;
 const height = window.innerHeight;
 
 // Load data from CSV
-d3.csv("C:\\Users\\matth\\Worldmap_proj\\Global_Education.csv").then((educationData) => {
+d3.csv("https://MatthewDavid210.github.io/World_Birth_Rate/Global_Education.csv").then((educationData) => {
   const projection = d3.geoOrthographic()
     .scale(200)
     .translate([width / 2, height / 2])
@@ -44,7 +44,7 @@ d3.csv("C:\\Users\\matth\\Worldmap_proj\\Global_Education.csv").then((educationD
   };
 
   // Load world map data
-  d3.json("C:\\Users\\matth\\Worldmap_proj\\countries.geo.json").then((world) => {
+  d3.json("https://MatthewDavid210.github.io/World_Birth_Rate/countries.geo.json").then((world) => {
     svg.selectAll("path")
       .data(world.features)
       .enter().append("path")
