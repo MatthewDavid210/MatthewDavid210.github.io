@@ -3,17 +3,54 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>3D Interactive Map</title>
+  <title>3D Interactive Map with Birth Rate</title>
   <style>
     #map-container {
       width: 100vw;
       height: 100vh;
     }
+
+    .legend {
+      position: absolute;
+      bottom: 20px;
+      left: 20px;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .legend-item {
+      display: flex;
+      align-items: center;
+      margin-bottom: 5px;
+    }
+
+    .legend-color {
+      width: 20px;
+      height: 20px;
+      margin-right: 5px;
+    }
   </style>
 </head>
 <body>
 
+<h1>3D Interactive Map with Birth Rate</h1>
+
 <div id="map-container"></div>
+
+<div class="legend">
+  <div class="legend-item">
+    <div class="legend-color" style="background-color: #ccc;"></div>
+    <span>No Data</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-color" style="background-color: #08519c;"></div>
+    <span>Low Birth Rate</span>
+  </div>
+  <div class="legend-item">
+    <div class="legend-color" style="background-color: #bdd7e7;"></div>
+    <span>High Birth Rate</span>
+  </div>
+</div>
 
 <script src="https://d3js.org/d3.v5.min.js"></script>
 <script>
@@ -78,4 +115,3 @@ d3.csv("Global_Education.csv").then((educationData) => {
 
 </body>
 </html>
-
