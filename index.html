@@ -82,14 +82,14 @@ d3.csv("Global_Education_With_Country_Code.csv").then((educationData) => {
 
   legend.append("div")
     .attr("class", "legend-item")
-    .html(`<div class='legend-color' style='background-color: ${colorScale.range()[0]};'></div><span>Low Birth Rate</span>`);
+    .html(`<div class='legend-color' style='background-color: ${colorScale(0)};'></div><span>Low Birth Rate</span>`);
 
   legend.append("div")
     .attr("class", "legend-item")
-    .html(`<div class='legend-color' style='background-color: ${colorScale.range()[1]};'></div><span>High Birth Rate</span>`);
+    .html(`<div class='legend-color' style='background-color: ${colorScale(1)};'></div><span>High Birth Rate</span>`);
 
-  // Load world map data
-  d3.json("https://raw.githubusercontent.com/d3/d3.github.com/master/world-110m.v1.json").then((world) => {
+  // Load world map data from local file
+  d3.json("countries.geo.json").then((world) => {
     svg.selectAll("path")
       .data(world.features)
       .enter().append("path")
