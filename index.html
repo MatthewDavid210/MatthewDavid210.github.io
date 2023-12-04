@@ -46,6 +46,20 @@
 <div id="map-container"></div>
 
 <div class="legend" id="legend">
+  <div class="legend-item">
+    <div class="legend-color" style="background-color: #ccc;"></div>
+    <span>No Data</span>
+  </div>
+
+  <div class="legend-item">
+    <div class="legend-color" style="background-color: #d0ebf2;"></div>
+    <span>Low Birth Rate</span>
+  </div>
+
+  <div class="legend-item">
+    <div class="legend-color" style="background-color: #08306b;"></div>
+    <span>High Birth Rate</span>
+  </div>
 </div>
 
 <div id="tooltip"></div>
@@ -82,7 +96,7 @@ d3.csv("Global_Education_With_Country_Code.csv").then((educationData) => {
 
   legend.append("div")
     .attr("class", "legend-item")
-    .html(`<div class='legend-color' style='background-color: ${colorScale(0)};'></div><span>Low Birth Rate</span>`);
+    .html(`<div class='legend-color' style='background-color: ${colorScale(0.25)};'></div><span>Low Birth Rate</span>`);
 
   legend.append("div")
     .attr("class", "legend-item")
@@ -131,6 +145,9 @@ d3.csv("Global_Education_With_Country_Code.csv").then((educationData) => {
 });
 
 </script>
+
+</body>
+</html>
 
 </body>
 </html>
