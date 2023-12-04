@@ -22,7 +22,7 @@ const width = window.innerWidth;
 const height = window.innerHeight;
 
 // Load data from CSV
-d3.csv("https://MatthewDavid210.github.io/MatthewDavid210/Global_Education.csv").then((educationData) => {
+d3.csv("Global_Education.csv").then((educationData) => {
   const projection = d3.geoOrthographic()
     .scale(200)
     .translate([width / 2, height / 2])
@@ -44,7 +44,7 @@ d3.csv("https://MatthewDavid210.github.io/MatthewDavid210/Global_Education.csv")
   };
 
   // Load world map data
-  d3.json("https://MatthewDavid210.github.io/MatthewDavid210/countries.geo.json").then((world) => {
+  d3.json("countries.geo.json").then((world) => {
     svg.selectAll("path")
       .data(world.features)
       .enter().append("path")
@@ -78,3 +78,4 @@ d3.csv("https://MatthewDavid210.github.io/MatthewDavid210/Global_Education.csv")
 
 </body>
 </html>
+
