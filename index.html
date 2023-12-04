@@ -57,6 +57,11 @@
   </div>
 
   <div class="legend-item">
+    <div class="legend-color" style="background-color: #aed9e0;"></div>
+    <span>Mid Birth Rate</span>
+  </div>
+
+  <div class="legend-item">
     <div class="legend-color" style="background-color: #08306b;"></div>
     <span>High Birth Rate</span>
   </div>
@@ -79,8 +84,9 @@ d3.csv("Global_Education_With_Country_Code.csv").then((educationData) => {
 
   const path = d3.geoPath().projection(projection);
 
-  const colorScale = d3.scaleSequential(d3.interpolateBlues)
-    .domain([d3.min(educationData, d => +d.Birth_Rate), d3.max(educationData, d => +d.Birth_Rate)]);
+  const colorScale = d3.scaleThreshold()
+    .domain([20, 25, 30])
+    .range(["#ccc", "#d0ebf2", "#aed9e0", "#08306b"]);
 
   const svg = d3.select("#map-container").append("svg")
     .attr("width", "100%")
@@ -96,11 +102,15 @@ d3.csv("Global_Education_With_Country_Code.csv").then((educationData) => {
 
   legend.append("div")
     .attr("class", "legend-item")
-    .html(`<div class='legend-color' style='background-color: ${colorScale(0.25)};'></div><span>Low Birth Rate</span>`);
+    .html(`<div class='legend-color' style='background-color: ${colorScale(20)};'></div><span>Low Birth Rate</span>`);
 
   legend.append("div")
     .attr("class", "legend-item")
-    .html(`<div class='legend-color' style='background-color: ${colorScale(1)};'></div><span>High Birth Rate</span>`);
+    .html(`<div class='legend-color' style='background-color: ${colorScale(25)};'></div><span>Mid Birth Rate</span>`);
+
+  legend.append("div")
+    .attr("class", "legend-item")
+    .html(`<div class='legend-color' style='background-color: ${colorScale(30)};'></div><span>High Birth Rate</span>`);
 
   // Load world map data from local file
   d3.json("countries.geo.json").then((world) => {
@@ -132,10 +142,16 @@ d3.csv("Global_Education_With_Country_Code.csv").then((educationData) => {
         const matchingData = educationData.find((data) => data['Country Code'] === countryCode);
 
         const tooltip = d3.select("#tooltip");
-        tooltip.html(`<strong>${d.properties.name}</strong><br>Birth Rate: ${matchingData ? matchingData.Birth_Rate : 'No Data'}`);
-        tooltip.style("left", (event.pageX + 10) + "px")
-          .style("top", (event.pageY - 10) + "px")
-          .style("display", "block");
+
+        // Add a check for the 'properties' property before accessing 'name'
+        if (d.properties && d.properties.name && matchingData) {
+          tooltip.html(`<strong>${d.properties.name}</strong><br>Birth Rate: ${matchingData.Birth_Rate}`);
+          tooltip.style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 10) + "px")
+            .style("display", "block");
+        } else {
+          tooltip.style("display", "none");
+        }
       })
       .on("mouseout", () => {
         // Hide tooltip on mouseout
@@ -149,5 +165,3 @@ d3.csv("Global_Education_With_Country_Code.csv").then((educationData) => {
 </body>
 </html>
 
-</body>
-</html>
